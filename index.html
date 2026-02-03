@@ -127,7 +127,7 @@
             if(!u || !p) return alert("REQUIRED: User/Pass empty!");
 
             try {
-                const res = await fetch('/api/auth', {
+                const res = await fetch('/api/auth.js', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ type: currentType, username: u, password: p })
