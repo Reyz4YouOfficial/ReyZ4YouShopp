@@ -146,7 +146,7 @@
             if(!selectedProduct) return;
             
             try {
-                const res = await fetch('/api/pakasir', {
+                const res = await fetch('/api/pakasir.js', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ amount: selectedProduct.price, itemName: selectedProduct.name })
