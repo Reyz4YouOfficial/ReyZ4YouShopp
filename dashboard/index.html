@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REYZ4YOUXGOD | DASHBOARD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --yellow: #fcee0a; --cyan: #00f0ff; --pink: #ff003c; --bg-dark: #050505; }
+        body { background: var(--bg-dark); font-family: 'Rajdhani', sans-serif; color: white; min-height: 100vh; }
+        
+        .cyber-border { border: 1px solid var(--cyan); box-shadow: 0 0 10px rgba(0, 240, 255, 0.1); }
+        .video-banner { width: 100%; height: 180px; border-bottom: 2px solid var(--cyan); overflow: hidden; position: relative; }
+        .video-banner video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+
+        .category-btn { 
+            background: rgba(255,255,255,0.03); border: 1px solid #333; padding: 15px; 
+            transition: 0.3s; cursor: pointer; text-align: center;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+        }
+        .category-btn.active { background: var(--cyan); color: #000; border-color: var(--cyan); font-weight: 900; }
+
+        .product-card { 
+            background: rgba(10, 10, 15, 0.9); border-left: 4px solid var(--cyan);
+            padding: 15px; transition: 0.3s;
+        }
+        .product-card:hover { background: rgba(0, 240, 255, 0.05); transform: translateX(5px); }
+
+        /* Modal / Checkout Card */
+        #checkout-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 100; display: none;
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .checkout-card {
+            background: #0a0a0a; border: 2px solid var(--yellow); padding: 25px;
+            width: 90%; max-width: 350px; clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
+        }
+    </style>
+</head>
+<body>
+
+    <script>if(localStorage.getItem('isLoggedIn') !== 'true') window.location.href = "/";</script>
+
+    <div class="video-banner">
+        <video autoplay muted loop playsinline><source src="https://g.top4top.io/m_3672d3e6p5.mp4"></video>
+        <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+            <h1 class="text-3xl font-black text-yellow-400 tracking-[0.3em]" style="font-family:'Orbitron'">DASHBOARD_V1</h1>
+            <p id="welcome-user" class="text-cyan-400 font-bold tracking-widest text-xs uppercase"></p>
+        </div>
+    </div>
+
+    <div class="p-6 max-w-5xl mx-auto">
+        
+        <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+            <div class="text-[10px] text-gray-500 font-mono">STATUS: <span class="text-green-500 underline">ENCRYPTED_SESSION</span></div>
+            <button onclick="localStorage.clear(); location.href='/';" class="text-pink-500 text-xs font-bold hover:scale-110 transition-all uppercase">
+                <i class="fas fa-power-off"></i> Terminate
+            </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mb-10">
+            <div onclick="showCategory('apk')" id="cat-apk" class="category-btn active">APK_MOD</div>
+            <div onclick="showCategory('vps')" id="cat-vps" class="category-btn">VPS_DO</div>
+            <div onclick="showCategory('panel')" id="cat-panel" class="category-btn">PTERO</div>
+        </div>
+
+        <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            </div>
+    </div>
+
+    <div id="checkout-modal">
+        <div class="checkout-card">
+            <h2 class="text-yellow-400 font-black text-xl mb-4" style="font-family:'Orbitron'">CHECKOUT_SESS</h2>
+            <div class="space-y-2 font-mono text-sm border-b border-white/10 pb-4 mb-4">
+                <div class="flex justify-between"><span>ITEM:</span> <span id="out-name" class="text-cyan-400">-</span></div>
+                <div class="flex justify-between"><span>PRICE:</span> <span id="out-price" class="text-cyan-400">-</span></div>
+                <div class="flex justify-between"><span>NODE:</span> <span class="text-gray-500">REYZ_SECURE</span></div>
+            </div>
+            <button onclick="processPayment()" class="w-full bg-cyan-500 text-black font-black p-3 mb-2 hover:bg-white transition-all">
+                LANJUT PEMBAYARAN
+            </button>
+            <button onclick="closeCheckout()" class="w-full text-pink-500 text-[10px] font-bold tracking-widest uppercase">
+                CANCEL_ORDER
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('welcome-user').innerText = "OPERATOR: " + (localStorage.getItem('currentUser') || "GUEST");
+
+        const products = {
+            apk: [
+                { name: "Netflix Premium 1 Bulan", price: 15000, desc: "Ultra HD 4K, Anti Hold." },
+                { name: "Youtube Premium 1 Bulan", price: 10000, desc: "Tanpa Iklan, Background Play." }
+            ],
+            vps: [
+                { name: "DO $200 Credit", price: 45000, desc: "Fresh Akun, Limit $200." },
+                { name: "DO $100 Credit", price: 25000, desc: "Fresh Akun, Limit $100." }
+            ],
+            panel: [
+                { name: "Ptero Ram 8GB", price: 15000, desc: "Unlimited Slot, Private Node." },
+                { name: "Ptero Ram 16GB", price: 30000, desc: "Unlimited Slot, Premium Node." }
+            ]
+        };
+
+        let selectedProduct = null;
+
+        function showCategory(cat) {
+            // Update UI Button
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('cat-' + cat).classList.add('active');
+
+            // Render Produk
+            const container = document.getElementById('product-container');
+            container.innerHTML = products[cat].map(p => `
+                <div class="product-card flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-cyan-400">${p.name}</h3>
+                        <p class="text-[10px] text-gray-500">${p.desc}</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-yellow-400 font-bold mb-1">Rp${p.price.toLocaleString()}</div>
+                        <button onclick="openCheckout('${p.name}', ${p.price})" class="bg-white/5 border border-cyan-500/50 px-4 py-1 text-[10px] font-bold hover:bg-cyan-500 hover:text-black transition-all">
+                            SELECT
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openCheckout(name, price) {
+            selectedProduct = { name, price };
+            document.getElementById('out-name').innerText = name;
+            document.getElementById('out-price').innerText = "Rp" + price.toLocaleString();
+            document.getElementById('checkout-modal').style.display = 'flex';
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').style.display = 'none';
+        }
+
+        async function processPayment() {
+            if(!selectedProduct) return;
+            
+            try {
+                const res = await fetch('/api/pakasir', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ amount: selectedProduct.price, itemName: selectedProduct.name })
+                });
+                const data = await res.json();
+                if(data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert("PAYMENT_ERROR: Link gagal dibuat.");
+                }
+            } catch (err) {
+                alert("SERVER_OFFLINE: Pastikan sudah di-deploy ke Vercel.");
+            }
+        }
+
+        // Init pertama kali
+        showCategory('apk');
+    </script>
+</body>
+</html>
