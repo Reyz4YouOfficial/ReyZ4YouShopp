@@ -3,85 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIBRARY_CORE | DASHBOARD</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>LIBRARY_CORE | OPERATOR_NODE</title>
     <style>
-        :root { --yellow: #fcee0a; --cyan: #00f0ff; --pink: #ff003c; --bg-dark: #050505; }
-        body { background: var(--bg-dark); font-family: 'Rajdhani', sans-serif; color: white; min-height: 100vh; }
-        #sidebar { transform: translateX(-100%); transition: 0.3s ease-in-out; z-index: 200; width: 260px; }
-        #sidebar.open { transform: translateX(0); }
-        #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 150; }
-        #overlay.active { display: block; }
-        .cyber-card { background: rgba(10, 10, 15, 0.9); border-left: 4px solid var(--cyan); padding: 15px; margin-bottom: 12px; }
-        .video-banner { width: 100%; height: 160px; border-bottom: 2px solid var(--cyan); position: relative; overflow: hidden; }
-        .video-banner video { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
-        .cat-btn { background: #111; border: 1px solid #333; padding: 10px; text-align: center; font-size: 10px; cursor: pointer; }
-        .cat-btn.active { background: var(--cyan); color: #000; font-weight: 900; }
-        #check-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 350px; background: #0a0a0a; border: 2px solid var(--yellow); z-index: 300; display: none; flex-direction: column; padding: 20px; }
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-yellow: #ffcc00;
+            --bg-dark: #0a0a0a;
+            --card-bg: #111111;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Hamburger Menu --- */
+        .hamburger {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--neon-blue);
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--neon-blue);
+            margin: 5px 0;
+            transition: 0.4s;
+        }
+
+        /* --- Video Banner --- */
+        .banner-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 2px solid var(--neon-blue);
+        }
+
+        .banner-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            object-fit: cover;
+            opacity: 0.5;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .banner-content h1 {
+            color: var(--neon-yellow);
+            letter-spacing: 5px;
+            margin: 0;
+            font-size: 2rem;
+            text-shadow: 0 0 10px rgba(0,0,0,1);
+        }
+
+        /* --- Main Content --- */
+        .container { padding: 20px; }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .tab-btn {
+            background: #1a1a1a;
+            color: white;
+            border: 1px solid #333;
+            padding: 10px;
+            cursor: pointer;
+            flex: 1;
+            font-size: 0.7rem;
+        }
+
+        .tab-btn.active {
+            background: var(--neon-blue);
+            color: black;
+            font-weight: bold;
+        }
+
+        .product-list {
+            display: grid;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-left: 3px solid var(--neon-blue);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price { color: var(--neon-blue); font-weight: bold; }
+
+        .footer-info {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #222;
+        }
     </style>
 </head>
 <body>
-    <div id="overlay" onclick="toggleSidebar()"></div>
-    <div class="fixed top-5 left-5 z-[250]"><button onclick="toggleSidebar()" class="text-cyan-400 text-2xl"><i class="fas fa-bars" id="menu-icon"></i></button></div>
 
-    <div id="sidebar" class="fixed top-0 left-0 h-full bg-[#080808] border-r border-cyan-500/30 p-6 pt-20">
-        <p id="user-name" class="text-yellow-400 font-black text-xl mb-10">USER</p>
-        <nav class="space-y-6">
-            <button onclick="window.location.href='/ai/index.html'" class="flex items-center gap-4 hover:text-cyan-400 w-full text-left font-bold tracking-widest text-sm"><i class="fas fa-robot text-cyan-400"></i> AI_ASSISTANT</button>
-            <button onclick="logout()" class="flex items-center gap-4 text-pink-500 pt-10 font-bold tracking-widest text-sm"><i class="fas fa-power-off"></i> LOGOUT</button>
-        </nav>
+    <div class="hamburger" onclick="window.location.href='Ai/index.html'">
+        <div></div>
+        <div></div>
+        <div></div>
+        <span style="font-size: 0.6rem; color: var(--neon-blue); display: block; margin-top: 5px;">AI_ASISTEN</span>
     </div>
 
-    <div class="video-banner">
-        <video autoplay muted loop playsinline><source src="https://g.top4top.io/m_3672d3e6p5.mp4"></video>
-        <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-            <h1 class="text-2xl font-black text-yellow-400 tracking-[0.3em]" style="font-family:'Orbitron'">LIBRARY_CORE</h1>
-            <p class="text-[9px] text-cyan-400 font-mono tracking-widest uppercase">// Operator_Mode</p>
+    <div class="banner-container">
+        <video autoplay muted loop playsinline class="banner-video">
+            <source src="https://g.top4top.io/m_3672d3e6p5.mp4" type="video/mp4">
+        </video>
+        <div class="banner-content">
+            <h1>LIBRARY_CORE</h1>
+            <div style="color: var(--neon-blue); font-size: 0.8rem;">// OPERATOR_NODE</div>
         </div>
     </div>
 
-    <div class="p-5 max-w-xl mx-auto">
-        <div class="grid grid-cols-3 gap-2 mb-8"><div onclick="showCat('apk')" id="cat-apk" class="cat-btn active uppercase">Apk_Mod</div><div onclick="showCat('vps')" id="cat-vps" class="cat-btn uppercase">Vps_Do</div><div onclick="showCat('panel')" id="cat-panel" class="cat-btn uppercase">Ptero_Host</div></div>
-        <div id="product-list"></div>
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showCat('apk')">APK_MOD</button>
+            <button class="tab-btn" onclick="showCat('vps')">VPS_DO</button>
+            <button class="tab-btn" onclick="showCat('ptero')">PTERO_HOST</button>
+        </div>
+        <div id="product-list" class="product-list"></div>
     </div>
 
-    <div id="check-modal">
-        <h2 class="text-yellow-400 font-black text-sm mb-4 uppercase">Confirm_Order</h2>
-        <p id="out-name" class="text-cyan-400 font-bold">-</p>
-        <p id="out-price" class="text-2xl font-black text-white mt-1 mb-6">-</p>
-        <button onclick="pay()" class="w-full bg-cyan-500 text-black font-black p-3 text-sm">PROSES PEMBAYARAN</button>
-        <button onclick="document.getElementById('check-modal').style.display='none'" class="text-[10px] text-pink-500 mt-4 block mx-auto font-bold">CANCEL</button>
+    <div class="footer-info">
+        <h3 style="color: var(--neon-yellow);">LIBRARY_CORE</h3>
+        <p style="font-size: 0.6rem; opacity: 0.5;">// ACCESS_GRANTED_OPERATOR</p>
     </div>
 
     <script>
-        const products = { apk: [{n:"NETFLIX PREM", p:15000, d:"Ultra HD 4K"}, {n:"SPOTIFY PREM", p:10000, d:"Individual Plan"}], vps: [{n:"VPS DO $200", p:45000, d:"Fresh Account"}], panel: [{n:"PTERO 8GB", p:15000, d:"Private Node"}] };
-        document.getElementById('user-name').innerText = localStorage.getItem('currentUser') || "USER";
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
-        function showCat(cat) { document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active')); document.getElementById('cat-'+cat).classList.add('active'); const list = document.getElementById('product-list'); list.innerHTML = products[cat].map(p => `<div class="cyber-card flex justify-between items-center"><div><h3 class="font-bold text-cyan-400 text-sm">${p.n}</h3><p class="text-[10px] text-gray-500">${p.d}</p></div><button onclick="openCheck('${p.n}', ${p.p})" class="bg-cyan-500/10 border border-cyan-500 text-cyan-400 px-3 py-1 text-xs font-bold">Rp${p.p.toLocaleString()}</button></div>`).join(''); }
-        function openCheck(n, p) { selected = {n, p}; document.getElementById('out-name').innerText = n; document.getElementById('out-price').innerText = "Rp " + p.toLocaleString(); document.getElementById('check-modal').style.display = 'flex'; }
-        async function pay() { const res = await fetch('/api/pakasir', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({amount:selected.p, itemName:selected.n}) }); const data = await res.json(); if(data.url) window.location.href = data.url; }
-        function logout() { localStorage.clear(); window.location.href = "/"; }
+        const products = {
+            apk: [
+                { n: "NETFLIX PREM", p: 15000, d: "Ultra HD 4K" },
+                { n: "SPOTIFY PREM", p: 10000, d: "Individual Plan" }
+            ],
+            vps: [
+                { n: "VPS DO $200", p: 45000, d: "Credit $200, 60 Days" }
+            ],
+            ptero: [
+                { n: "PTERO 8GB", p: 15000, d: "Private Node" }
+            ]
+        };
+
+        function showCat(cat) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText.toLowerCase().includes(cat)) btn.classList.add('active');
+            });
+
+            const listContainer = document.getElementById('product-list');
+            listContainer.innerHTML = products[cat].map(p => `
+                <div class="product-card" onclick="openCheck('${p.n}', ${p.p})">
+                    <div>
+                        <div style="font-weight:bold; font-size: 0.85rem;">${p.n}</div>
+                        <div style="font-size:0.6rem; color:#888;">${p.d}</div>
+                    </div>
+                    <div class="price">Rp${p.p.toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        function openCheck(name, price) {
+            if(confirm(`Beli ${name} seharga Rp${price.toLocaleString()}?`)) {
+                alert("Proses pembayaran...");
+            }
+        }
+
         showCat('apk');
     </script>
 </body>
-</html>            vps: [{n:"VPS DO $200", p:45000, d:"Credit $200, 60 Days"}],
-            panel: [{n:"PTERO 8GB", p:15000, d:"Private Node"}]
-        };
-
-        let selected = null;
-        document.getElementById('user-name').innerText = localStorage.getItem('currentUser') || "USER";
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-
-        function showCat(cat) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('cat-'+cat).classList.add('active');
-            const list = document.getElementById('product-list');
+</html>            const list = document.getElementById('product-list');
             list.innerHTML = products[cat].map(p => `
                 <div class="cyber-card flex justify-between items-center">
                     <div><h3 class="font-bold text-cyan-400 text-sm">${p.n}</h3><p class="text-[10px] text-gray-500">${p.d}</p></div>
