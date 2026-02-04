@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORE_AI | LIBRARY_CORE</title>
+    <style>
+        :root { --neon-blue: #00f2ff; --bg: #050505; }
+        body { background: var(--bg); color: white; font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        .chat-header { padding: 20px; border-bottom: 1px solid var(--neon-blue); display: flex; align-items: center; gap: 15px; background: #000; }
+        .chat-box { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { max-width: 85%; padding: 12px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
+        .msg.ai { background: rgba(0, 242, 255, 0.05); border: 1px solid var(--neon-blue); align-self: flex-start; color: var(--neon-blue); }
+        .msg.user { background: #222; align-self: flex-end; border: 1px solid #444; }
+        .input-area { padding: 20px; background: #000; display: flex; gap: 10px; border-top: 1px solid #111; }
+        input { flex: 1; background: #0a0a0a; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; outline: none; }
+        button { background: var(--neon-blue); border: none; padding: 0 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="chat-header">
+        <a href="/dashboard" style="color:var(--neon-blue); text-decoration:none;">← BACK</a>
+        <div style="letter-spacing: 2px;">SYSTEM_AI_PROMPT</div>
+    </div>
+    <div class="chat-box" id="chat">
+        <div class="msg ai">Akses diterima. Silahkan berikan instruksi, Operator.</div>
+    </div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Tanya Gemini AI...">
+        <button onclick="askAI()">SEND</button>
+    </div>
+
+    <script>
+        async function askAI() {
+            const input = document.getElementById('userInput');
+            const chat = document.getElementById('chat');
+            if(!input.value) return;
+
+            const userText = input.value;
+            chat.innerHTML += `<div class="msg user">${userText}</div>`;
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            try {
+                const res = await fetch('/api/gemini', { // Pastikan buat api/gemini.js
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: userText })
+                });
+                const data = await res.json();
+                chat.innerHTML += `<div class="msg ai">${data.reply}</div>`;
+            } catch (err) {
+                chat.innerHTML += `<div class="msg ai">Error: Gagal menghubungi server AI.</div>`;
+            }
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>
