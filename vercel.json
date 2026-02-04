@@ -1,6 +1,22 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" }
-  ]
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    },
+    {
+      "source": "/ai",
+      "destination": "/ai.html"
+    },
+    {
+      "source": "/setting",
+      "destination": "/setting.html"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "cleanUrls": true
 }
