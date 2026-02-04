@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SETTINGS | LIBRARY_CORE</title>
+    <style>
+        :root { --neon-blue: #00f2ff; --bg: #050505; }
+        body { background: var(--bg); color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .box { width: 90%; max-width: 400px; background: #0d0d0d; padding: 30px; border-radius: 20px; border: 1px solid #222; }
+        h2 { color: var(--neon-blue); letter-spacing: 3px; margin-bottom: 25px; text-align: center; }
+        label { font-size: 11px; color: #555; display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: white; border-radius: 10px; margin-bottom: 20px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; background: var(--neon-blue); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>SETTINGS</h2>
+        <label>NEW DISPLAY NAME</label>
+        <input type="text" id="name">
+        <label>AVATAR URL</label>
+        <input type="text" id="photo">
+        <button class="btn" onclick="save()">SAVE TO DATABASE</button>
+        <a href="/dashboard" style="display:block; text-align:center; margin-top:15px; color:#444; text-decoration:none; font-size:12px;">CANCEL</a>
+    </div>
+
+    <script>
+        async function save() {
+            const data = {
+                name: document.getElementById('name').value,
+                photo: document.getElementById('photo').value
+            };
+            const res = await fetch('/api/update-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if(res.ok) { alert("Data Tersimpan!"); window.location.href = "/dashboard"; }
+        }
+    </script>
+</body>
+</html>
