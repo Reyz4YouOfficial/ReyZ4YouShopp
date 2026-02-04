@@ -6,7 +6,7 @@ let cachedDb = null;
 
 async function connectToDatabase() {
     if (cachedDb) return cachedDb;
-    const db = await mongoose.connect(config.MONGODBURI || config.url);
+    const db = await mongoose.connect(config.MONGODB_URI || config.url);
     cachedDb = db;
     return db;
 }
