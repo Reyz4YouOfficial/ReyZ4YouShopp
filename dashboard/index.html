@@ -143,6 +143,68 @@
         showCat('apk');
     </script>
 </body>
+</html>        <div id="product-list" class="space-y-4"></div>
+    </div>
+
+    <div id="check-modal" class="p-6 shadow-[0_0_50px_rgba(252,238,10,0.2)]">
+        <h2 class="text-yellow-400 font-black text-lg mb-2 uppercase" style="font-family:'Orbitron'">Confirm_Order</h2>
+        <div class="border-y border-white/10 py-4 my-4">
+            <p id="out-name" class="text-cyan-400 font-bold">-</p>
+            <p id="out-price" class="text-2xl font-black text-white mt-1">-</p>
+        </div>
+        <button onclick="pay()" class="w-full bg-cyan-500 text-black font-black p-3 hover:bg-white transition-all">PROSES PEMBAYARAN</button>
+        <button onclick="document.getElementById('check-modal').style.display='none'" class="w-full text-pink-500 text-[10px] font-bold mt-4 uppercase">Cancel_Transaction</button>
+    </div>
+
+    <script>
+        const products = {
+            apk: [{n:"Netflix 4K UHD", p:15000, d:"Anti Hold, Garansi Full"}, {n:"Spotify Premium", p:10000, d:"1 Bulan, Akun Baru"}],
+            vps: [{n:"VPS DO $200", p:45000, d:"Credit $200, 60 Days"}, {n:"VPS DO $100", p:25000, d:"Credit $100, 60 Days"}],
+            panel: [{n:"Panel Ptero 8GB", p:15000, d:"Ram 8GB, CPU 200%"}, {n:"Panel Ptero 16GB", p:30000, d:"Ram 16GB, CPU 400%"}]
+        };
+
+        let selected = null;
+        document.getElementById('user-display').innerText = localStorage.getItem('currentUser') || "USER";
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+            const icon = document.getElementById('menu-icon');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        }
+
+        function showCat(cat) {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('cat-'+cat).classList.add('active');
+            const list = document.getElementById('product-list');
+            list.innerHTML = products[cat].map(p => `
+                <div class="cyber-card flex justify-between items-center animate-fadeIn">
+                    <div><h3 class="font-bold text-cyan-400 uppercase">${p.n}</h3><p class="text-[10px] text-gray-500">${p.d}</p></div>
+                    <button onclick="openCheck('${p.n}', ${p.p})" class="bg-cyan-500/10 border border-cyan-500 text-cyan-400 px-4 py-2 text-xs font-bold hover:bg-cyan-500 hover:text-black transition-all">Rp${p.p.toLocaleString()}</button>
+                </div>
+            `).join('');
+        }
+
+        function openCheck(n, p) { 
+            selected = {n, p}; 
+            document.getElementById('out-name').innerText = n;
+            document.getElementById('out-price').innerText = "Rp " + p.toLocaleString();
+            document.getElementById('check-modal').style.display = 'flex'; 
+        }
+
+        async function pay() {
+            try {
+                const res = await fetch('/api/pakasir', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({amount:selected.p, itemName:selected.n}) });
+                const data = await res.json();
+                if(data.url) window.location.href = data.url;
+            } catch { alert("SERVER_ERROR: Hubungi Admin."); }
+        }
+
+        function logout() { localStorage.clear(); window.location.href = "/"; }
+        showCat('apk');
+    </script>
+</body>
 </html>            </div>
     </div>
 
