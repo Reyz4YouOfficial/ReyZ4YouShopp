@@ -3,40 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REYZ4YOUXGOD | DASHBOARD</title>
+    <title>REYZ4YOUXGOD | DASHBOARD_V1</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --yellow: #fcee0a; --cyan: #00f0ff; --pink: #ff003c; --bg-dark: #050505; }
-        body { background: var(--bg-dark); font-family: 'Rajdhani', sans-serif; color: white; min-height: 100vh; }
+        body { background: var(--bg-dark); font-family: 'Rajdhani', sans-serif; color: white; min-height: 100vh; overflow-x: hidden; }
         
-        .cyber-border { border: 1px solid var(--cyan); box-shadow: 0 0 10px rgba(0, 240, 255, 0.1); }
+        /* Sidebar Logic */
+        #sidebar { transform: translateX(-100%); transition: 0.3s ease-in-out; z-index: 200; }
+        #sidebar.open { transform: translateX(0); }
+        #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 150; }
+        #overlay.active { display: block; }
+
+        /* Estetika Cyber */
+        .cyber-card { background: rgba(10, 10, 15, 0.9); border-left: 4px solid var(--cyan); padding: 15px; transition: 0.3s; }
         .video-banner { width: 100%; height: 180px; border-bottom: 2px solid var(--cyan); overflow: hidden; position: relative; }
-        .video-banner video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .video-banner video { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
 
         .category-btn { 
-            background: rgba(255,255,255,0.03); border: 1px solid #333; padding: 15px; 
-            transition: 0.3s; cursor: pointer; text-align: center;
+            background: rgba(255,255,255,0.03); border: 1px solid #333; padding: 12px; 
+            text-align: center; cursor: pointer; transition: 0.3s; font-size: 12px;
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
         }
-        .category-btn.active { background: var(--cyan); color: #000; border-color: var(--cyan); font-weight: 900; }
+        .category-btn.active { background: var(--cyan); color: #000; font-weight: 900; }
 
-        .product-card { 
-            background: rgba(10, 10, 15, 0.9); border-left: 4px solid var(--cyan);
-            padding: 15px; transition: 0.3s;
-        }
-        .product-card:hover { background: rgba(0, 240, 255, 0.05); transform: translateX(5px); }
-
-        /* Modal / Checkout Card */
-        #checkout-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 100; display: none;
-            align-items: center; justify-content: center; backdrop-filter: blur(5px);
-        }
-        .checkout-card {
-            background: #0a0a0a; border: 2px solid var(--yellow); padding: 25px;
-            width: 90%; max-width: 350px; clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
+        /* Modal AI & Checkout */
+        .modal-box {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 400px; background: #0a0a0a; border: 2px solid var(--cyan);
+            z-index: 300; display: none; flex-direction: column;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
         }
     </style>
 </head>
@@ -44,44 +42,135 @@
 
     <script>if(localStorage.getItem('isLoggedIn') !== 'true') window.location.href = "/";</script>
 
+    <div id="overlay" onclick="toggleSidebar()"></div>
+    <div class="fixed top-6 left-6 z-[250]">
+        <button onclick="toggleSidebar()" class="text-cyan-400 text-2xl"><i class="fas fa-bars" id="menu-icon"></i></button>
+    </div>
+
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-[#080808] border-r border-cyan-500 p-6 pt-20">
+        <div class="mb-10">
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">Operator_Session</p>
+            <p id="user-display" class="text-yellow-400 font-black text-xl tracking-tighter">GUEST</p>
+        </div>
+        <nav class="space-y-6">
+            <button onclick="openAI()" class="flex items-center gap-4 hover:text-cyan-400 transition-all">
+                <i class="fas fa-robot text-cyan-400"></i> <span class="font-bold">AI_ASSISTANT</span>
+            </button>
+            <button onclick="alert('System: Settings Locked.')" class="flex items-center gap-4 hover:text-cyan-400 transition-all">
+                <i class="fas fa-cog text-cyan-400"></i> <span class="font-bold">ACCOUNT_SETTINGS</span>
+            </button>
+            <button onclick="logout()" class="flex items-center gap-4 text-pink-500 hover:text-white pt-10">
+                <i class="fas fa-power-off"></i> <span class="font-bold">LOGOUT</span>
+            </button>
+        </nav>
+    </div>
+
     <div class="video-banner">
         <video autoplay muted loop playsinline><source src="https://g.top4top.io/m_3672d3e6p5.mp4"></video>
         <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-            <h1 class="text-3xl font-black text-yellow-400 tracking-[0.3em]" style="font-family:'Orbitron'">DASHBOARD_V1</h1>
-            <p id="welcome-user" class="text-cyan-400 font-bold tracking-widest text-xs uppercase"></p>
+            <h1 class="text-2xl font-black text-yellow-400 tracking-[0.4em] uppercase" style="font-family:'Orbitron'">Library_Node</h1>
+            <p class="text-[10px] text-cyan-400 tracking-widest">// ACCESS_GRANTED</p>
         </div>
     </div>
 
-    <div class="p-6 max-w-5xl mx-auto">
-        
-        <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-            <div class="text-[10px] text-gray-500 font-mono">STATUS: <span class="text-green-500 underline">ENCRYPTED_SESSION</span></div>
-            <button onclick="localStorage.clear(); location.href='/';" class="text-pink-500 text-xs font-bold hover:scale-110 transition-all uppercase">
-                <i class="fas fa-power-off"></i> Terminate
-            </button>
+    <div class="p-6 max-w-4xl mx-auto">
+        <div class="grid grid-cols-3 gap-2 mb-8">
+            <div onclick="showCat('apk')" id="cat-apk" class="category-btn active">APK_MOD</div>
+            <div onclick="showCat('vps')" id="cat-vps" class="category-btn">VPS_DO</div>
+            <div onclick="showCat('panel')" id="cat-panel" class="category-btn">PTERO</div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2 mb-10">
-            <div onclick="showCategory('apk')" id="cat-apk" class="category-btn active">APK_MOD</div>
-            <div onclick="showCategory('vps')" id="cat-vps" class="category-btn">VPS_DO</div>
-            <div onclick="showCategory('panel')" id="cat-panel" class="category-btn">PTERO</div>
-        </div>
-
-        <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div id="product-list" class="space-y-4">
             </div>
     </div>
 
-    <div id="checkout-modal">
-        <div class="checkout-card">
-            <h2 class="text-yellow-400 font-black text-xl mb-4" style="font-family:'Orbitron'">CHECKOUT_SESS</h2>
-            <div class="space-y-2 font-mono text-sm border-b border-white/10 pb-4 mb-4">
-                <div class="flex justify-between"><span>ITEM:</span> <span id="out-name" class="text-cyan-400">-</span></div>
-                <div class="flex justify-between"><span>PRICE:</span> <span id="out-price" class="text-cyan-400">-</span></div>
-                <div class="flex justify-between"><span>NODE:</span> <span class="text-gray-500">REYZ_SECURE</span></div>
-            </div>
-            <button onclick="processPayment()" class="w-full bg-cyan-500 text-black font-black p-3 mb-2 hover:bg-white transition-all">
-                LANJUT PEMBAYARAN
-            </button>
+    <div id="ai-modal" class="modal-box">
+        <div class="bg-cyan-500 p-3 text-black font-black flex justify-between">
+            <span class="text-xs">REYZ_AI_v1.0</span>
+            <button onclick="closeAI()">X</button>
+        </div>
+        <div id="ai-msgs" class="h-64 p-4 overflow-y-auto text-[10px] space-y-3 font-mono">
+            <div class="text-cyan-400">AI: System ready. Apa yang ingin Anda tanyakan?</div>
+        </div>
+        <div class="p-2 border-t border-gray-800 flex">
+            <input type="text" id="ai-in" class="flex-1 bg-black text-white p-2 text-xs outline-none" placeholder="Tanya AI...">
+            <button onclick="askAI()" class="bg-cyan-500 px-3 text-black font-bold text-xs">SEND</button>
+        </div>
+    </div>
+
+    <div id="check-modal" class="modal-box" style="border-color: var(--yellow);">
+        <div class="bg-yellow-400 p-3 text-black font-black text-xs uppercase">Confirm_Order</div>
+        <div class="p-6 text-center">
+            <h2 id="out-name" class="text-lg font-bold text-cyan-400">-</h2>
+            <p id="out-price" class="text-xl font-black text-white mt-2">-</p>
+            <button onclick="pay()" class="w-full bg-white text-black font-black p-3 mt-6 hover:bg-cyan-500 transition-all">PROSES PEMBAYARAN</button>
+            <button onclick="document.getElementById('check-modal').style.display='none'" class="text-[10px] text-pink-500 mt-4 uppercase font-bold">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // Data Produk
+        const products = {
+            apk: [{n:"Netflix Prem", p:15000, d:"4K UHD, No Hold"}, {n:"Spotify Fam", p:10000, d:"1 Month, Full Garansi"}],
+            vps: [{n:"DO $200 Credit", p:45000, d:"Fresh Akun"}, {n:"Linode $100", p:35000, d:"Limit 10 Instance"}],
+            panel: [{n:"Ptero 8GB", p:15000, d:"Private Node"}, {n:"Ptero 16GB", p:25000, d:"Ultra Speed"}]
+        };
+
+        let selected = null;
+        document.getElementById('user-display').innerText = localStorage.getItem('currentUser');
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function showCat(cat) {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('cat-'+cat).classList.add('active');
+            const list = document.getElementById('product-list');
+            list.innerHTML = products[cat].map(p => `
+                <div class="cyber-card flex justify-between items-center">
+                    <div><h3 class="font-bold text-cyan-400">${p.n}</h3><p class="text-[10px] text-gray-500">${p.d}</p></div>
+                    <button onclick="openCheck('${p.n}', ${p.p})" class="bg-cyan-500/10 border border-cyan-500 text-cyan-400 px-4 py-1 text-xs font-bold hover:bg-cyan-500 hover:text-black">Rp${p.p.toLocaleString()}</button>
+                </div>
+            `).join('');
+        }
+
+        function openCheck(n, p) { 
+            selected = {n, p}; 
+            document.getElementById('out-name').innerText = n;
+            document.getElementById('out-price').innerText = "Rp " + p.toLocaleString();
+            document.getElementById('check-modal').style.display = 'flex'; 
+        }
+
+        function openAI() { toggleSidebar(); document.getElementById('ai-modal').style.display = 'flex'; }
+        function closeAI() { document.getElementById('ai-modal').style.display = 'none'; }
+
+        async function askAI() {
+            const inp = document.getElementById('ai-in');
+            const box = document.getElementById('ai-msgs');
+            if(!inp.value) return;
+            box.innerHTML += `<div class="text-yellow-400 text-right">User: ${inp.value}</div>`;
+            const q = inp.value; inp.value = '';
+            try {
+                const res = await fetch('/api/ai', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({prompt: q}) });
+                const data = await res.json();
+                box.innerHTML += `<div class="text-cyan-400">AI: ${data.reply}</div>`;
+            } catch { box.innerHTML += `<div class="text-red-500">AI: Offline.</div>`; }
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function pay() {
+            const res = await fetch('/api/pakasir', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({amount:selected.p, itemName:selected.n}) });
+            const data = await res.json();
+            if(data.url) window.location.href = data.url;
+        }
+
+        function logout() { localStorage.clear(); window.location.href = "/"; }
+        showCat('apk');
+    </script>
+</body>
+</html>            </button>
             <button onclick="closeCheckout()" class="w-full text-pink-500 text-[10px] font-bold tracking-widest uppercase">
                 CANCEL_ORDER
             </button>
