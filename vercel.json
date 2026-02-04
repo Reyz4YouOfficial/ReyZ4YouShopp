@@ -3,15 +3,15 @@
   "rewrites": [
     {
       "source": "/dashboard",
-      "destination": "/dashboard.html"
+      "destination": "/index.html"
     },
     {
       "source": "/ai",
-      "destination": "/ai.html"
+      "destination": "/index.html"
     },
     {
       "source": "/setting",
-      "destination": "/setting.html"
+      "destination": "/index.html"
     },
     {
       "source": "/api/(.*)",
