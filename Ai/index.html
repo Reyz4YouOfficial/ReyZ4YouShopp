@@ -115,7 +115,7 @@
 
             try {
                 // 3. Ambil Jawaban dari Backend api/ai.js
-                const res = await fetch('/api/ai', { 
+                const res = await fetch('/api/ai.js', { 
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify({ prompt: q }) 
