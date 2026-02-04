@@ -42,7 +42,7 @@
             chat.scrollTop = chat.scrollHeight;
 
             try {
-                const res = await fetch('/api/gemini', { // Pastikan buat api/gemini.js
+                const res = await fetch('/api/gemini.js', { // Pastikan buat api/gemini.js
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: userText })
